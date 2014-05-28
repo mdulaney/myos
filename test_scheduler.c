@@ -19,10 +19,35 @@ status_t tf2(void *param) {
     return 0;
 }
 
+static void test_rsrc_req_pool(void **state) {
+    task_t t1 = {};
+    rsrc_req_t *req1 = NULL;
+    int32_t i = 0;
+
+    assert_int_equal(rsrc_req_pool_create(1, &t1, &req1), ERROR_SUCCESS);
+    assert_int_equal(rsrc_req_pool_delete(req1->id), ERROR_SUCCESS);
+    assert_int_equal(rsrc_req_pool_delete(req1->id), ERROR_DOES_NOT_EXIST);
+
+    for(i = 0; i < rsrc_req_pool_size(); i++) {
+        assert_int_equal(rsrc_req_pool_create(i, &t1, &req1), ERROR_SUCCESS);
+    }
+
+    assert_int_equal(rsrc_req_pool_create(1, &t1, &req1), ERROR_INSUFFICIENT_SYSTEM_RESOURCES);
+}
+
+static void test_simple_resources(void **state) {
+    (void)state;
+    rsrc_t rsrc1 = { 0 };
+    assert_int_equal(scheduler_init(), ERROR_SUCCESS);
+    assert_int_equal(create_mailslot(&rsrc1, "my_resource", 1), ERROR_SUCCESS);
+
+}
+
 static void test_twotasks(void **state) {
     (void)state;
     task_t t1 = {}, t2 = {};
 
+    assert_int_equal(scheduler_init(), ERROR_SUCCESS);
     assert_int_equal(create_task(&t1, "t1", 1, 0x1000, 0x2000, tf1, NULL), ERROR_SUCCESS);
     assert_int_equal(create_task(&t2, "t2", 2, 0x2000, 0x3000, tf2, NULL), ERROR_SUCCESS);
 
@@ -45,7 +70,9 @@ static void test_twotasks(void **state) {
 
 int main(void) {
     const UnitTest tests[] = {
-        unit_test(test_twotasks)
+        unit_test(test_rsrc_req_pool),
+        unit_test(test_simple_resources),
+        unit_test(test_twotasks),
     };
 
 

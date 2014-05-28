@@ -15,6 +15,12 @@ scheduler_ctx *scheduler_get_ctx();
 
 error_t scheduler_init();
 
+error_t rsrc_req_pool_create(rsrc_id_t id, task_t *owner, rsrc_req_t **req);
+
+error_t rsrc_req_pool_delete(rsrc_req_id_t id);
+
+uint32_t rsrc_req_pool_size();
+
 void scheduler_start();
 
 error_t scheduler_add_task(task_t *t);
@@ -23,7 +29,13 @@ error_t scheduler_remove_task(task_t *t);
 
 error_t scheduler_add_resource(rsrc_t *r);
 
-error_t scheduler_remove_resource(rsrc_t *r);
+error_t scheduler_remove_resource(rsrc_id_t id);
+
+error_t scheduler_acquire_rsrc_immed(rsrc_t *r, task_t *acquirer);
+
+error_t scheduler_acquire_rsrc(rsrc_t *r, task_t *owner, rsrc_req_id_t *id);
+
+error_t scheduler_release_rsrc(rsrc_req_id_t id);
 
 void scheduler_handle_interrupt();
 
