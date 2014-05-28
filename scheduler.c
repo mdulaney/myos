@@ -140,7 +140,7 @@ error_t scheduler_remove_resource(rsrc_id_t id) {
         break;
     }
 
-    return ERROR_UNEXPECTED_RESOURCE_REQUEST;
+    return ERROR_SUCCESS;
 }
 
 error_t scheduler_acquire_rsrc_immed(rsrc_t *r, task_t *acquirer) {
@@ -178,17 +178,13 @@ error_t scheduler_acquire_rsrc(rsrc_t *r, task_t * owner, rsrc_req_id_t *id) {
 }
 
 // TODO: needs to release resources, not resource requests
-error_t scheduler_release_rsrc(rsrc_req_id_t id) {
+error_t scheduler_release_rsrc(rsrc_id_t id) {
     error_t result = ERROR_SUCCESS;
-    rsrc_req_t *req = NULL, *req_tmp = NULL;
-    list_for_each_entry_safe(req, req_tmp, &sched_ctx.resource_reqs.list, list) {
-        if(req->id == id) {
-            list_del(&req->list);
+    rsrc_t *rsrc = NULL, *rsrc_tmp = NULL;
+    list_for_each_entry_safe(rsrc, rsrc_tmp, &sched_ctx.resources.list, list) {
+        if(rsrc->id == id) {
+            list_del(&rsrc->list);
 
-            result = rsrc_req_pool_delete(req->id);
-            if(result < 0) {
-                return result;
-            }
             return ERROR_SUCCESS;
         }
     }

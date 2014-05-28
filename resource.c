@@ -25,7 +25,13 @@ error_t delete_mailslot(rsrc_id_t id) {
 }
 
 error_t acquire(rsrc_t *rsrc, task_t *owner, rsrc_req_id_t *id) {
-    return scheduler_acquire_rsrc(rsrc, owner, id);
+    error_t result = ERROR_SUCCESS;
+    result = scheduler_acquire_rsrc_immed(rsrc, owner);
+    if(result == ERROR_RESOURCE_IN_USE) {
+        result = scheduler_acquire_rsrc(rsrc, owner, id);
+    }
+
+    return result;
 }
 
 error_t release(rsrc_req_id_t id) {

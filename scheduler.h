@@ -35,7 +35,7 @@ error_t scheduler_acquire_rsrc_immed(rsrc_t *r, task_t *acquirer);
 
 error_t scheduler_acquire_rsrc(rsrc_t *r, task_t *owner, rsrc_req_id_t *id);
 
-error_t scheduler_release_rsrc(rsrc_req_id_t id);
+error_t scheduler_release_rsrc(rsrc_id_t id);
 
 void scheduler_handle_interrupt();
 

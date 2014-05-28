@@ -38,8 +38,14 @@ static void test_rsrc_req_pool(void **state) {
 static void test_simple_resources(void **state) {
     (void)state;
     rsrc_t rsrc1 = { 0 };
+    task_t t1 = { 0 };
+    rsrc_req_id_t req_id = 0;
+
     assert_int_equal(scheduler_init(), ERROR_SUCCESS);
     assert_int_equal(create_mailslot(&rsrc1, "my_resource", 1), ERROR_SUCCESS);
+    assert_int_equal(acquire(&rsrc1, &t1, &req_id), ERROR_SUCCESS);
+    assert_int_equal(release(rsrc1.id), ERROR_SUCCESS);
+    assert_int_equal(delete_mailslot(rsrc1.id), ERROR_SUCCESS);
 
 }
 
