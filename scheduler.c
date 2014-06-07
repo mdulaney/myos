@@ -193,7 +193,7 @@ error_t scheduler_release_rsrc(rsrc_id_t id) {
 }
 
 // TODO: make this an interrupt handler
-void scheduler_handle_interrupt() {
+void scheduler_syscall(task_t *cur) {
     // TODO: save state for the current task
     scheduler_do_round();
     // TODO: restore state for the new task

@@ -39,6 +39,8 @@ error_t scheduler_release_rsrc(rsrc_id_t id);
 
 void scheduler_handle_interrupt();
 
+void scheduler_syscall(task_t *cur);
+
 void scheduler_do_round();
 
 void scheduler_do_syscall();

@@ -1,40 +1,54 @@
 #include "error.h"
 #include "resource.h"
-#include "scheduler.h"
+#include "syscall.h"
 
-#define RESOURCE_MAILSLOT ((rsrc_type_t)1)
+extern error_t syscall_enter(uint64_t syscall_num, uint64_t num_args, ...);
 
-error_t create_mailslot(rsrc_t *r,
-                        char *name,
-                        rsrc_id_t id) {
+error_t create_mailslot(char *name,
+                        rsrc_id_t *id) {
     error_t result = ERROR_SUCCESS;
-    r->id = id;
-    r->type = RESOURCE_MAILSLOT;
-    r->name = name;
-    r->owner = OWNER_NONE;
 
-    INIT_LIST_HEAD(&r->list);
-    result = scheduler_add_resource(r);
+    result = syscall_enter(SYSCALL_CREATE_RESOURCE,
+                           SYSCALL_CREATE_RESOURCE_ARGS,
+                           RESOURCE_TYPE_MAILSLOT,
+                           name,
+                           id);
+
 
     return result;
 }
 
 
 error_t delete_mailslot(rsrc_id_t id) {
-    return scheduler_remove_resource(id);
-}
-
-error_t acquire(rsrc_t *rsrc, task_t *owner, rsrc_req_id_t *id) {
     error_t result = ERROR_SUCCESS;
-    result = scheduler_acquire_rsrc_immed(rsrc, owner);
-    if(result == ERROR_RESOURCE_IN_USE) {
-        result = scheduler_acquire_rsrc(rsrc, owner, id);
-    }
+
+    result = syscall_enter(SYSCALL_DELETE_RESOURCE,
+                           SYSCALL_DELETE_RESOURCE_ARGS,
+                           id);
+
 
     return result;
 }
 
-error_t release(rsrc_req_id_t id) {
-    return scheduler_release_rsrc(id);
+error_t acquire(rsrc_id_t id) {
+    error_t result = ERROR_SUCCESS;
+
+    result = syscall_enter(SYSCALL_ACQUIRE_RESOURCE,
+                           SYSCALL_ACQUIRE_RESOURCE_ARGS,
+                           id);
+
+
+    return result;
+}
+
+error_t release(rsrc_id_t id) {
+    error_t result = ERROR_SUCCESS;
+
+    result = syscall_enter(SYSCALL_RELEASE_RESOURCE,
+                           SYSCALL_RELEASE_RESOURCE_ARGS,
+                           id);
+
+
+    return result;
 }
 

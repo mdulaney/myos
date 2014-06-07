@@ -1,0 +1,10 @@
+
+#define SYSCALL_CREATE_RESOURCE         (1)
+#define SYSCALL_DELETE_RESOURCE         (2)
+#define SYSCALL_ACQUIRE_RESOURCE        (3)
+#define SYSCALL_RELEASE_RESOURCE        (4)
+
+#define SYSCALL_CREATE_RESOURCE_ARGS          (2)
+#define SYSCALL_DELETE_RESOURCE_ARGS          (1)
+#define SYSCALL_ACQUIRE_RESOURCE_ARGS         (3)
+#define SYSCALL_RELEASE_RESOURCE_ARGS         (1)
